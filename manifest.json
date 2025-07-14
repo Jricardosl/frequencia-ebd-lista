@@ -1,0 +1,15 @@
+{
+  "name": "Frequência EBD",
+  "short_name": "EBD",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a4ca0",
+  "icons": [
+    {
+      "src": "images/LOGO NAZARENO.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    }
+  ]
+}
