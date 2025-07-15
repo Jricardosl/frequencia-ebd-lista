@@ -1,3 +1,16 @@
+const API_URL = "https://script.google.com/macros/s/AKfycbxrONxEXFU_JemcK9BZ-QOHc2uatgo4QVZYIz2JuWjP9nBIeeO7JPOOmS8uBDK0iogA8g/exec";
+
+
+const alunosPorTurma = {
+  "Criancas": [],
+  "Adolescentes": [],
+  "Jovens": [],
+  "Adulto": [],
+  "Terceira Idade": [],
+  "Discipulado": []
+};
+
+
 function getDomingosDoMes(ano, mes) {
   const datas = [];
   const date = new Date(ano, mes, 1);
@@ -30,7 +43,6 @@ function carregarAlunos() {
 
   const domingos = getDomingosDoMes(ano, mes);
 
-  // Cabeçalho
   const thInicio = document.createElement("th");
   thInicio.textContent = "Quant.";
   cabecalho.appendChild(thInicio);
@@ -45,7 +57,6 @@ function carregarAlunos() {
     cabecalho.appendChild(th);
   });
 
-  // Corpo da tabela
   lista.forEach((nome, index) => {
     const tr = document.createElement("tr");
     const isNovo = nome.startsWith("(NOVO)");
@@ -88,6 +99,8 @@ function salvarFrequencia() {
     ["Nº", "Nome", ...domingos.map(d => d.toLocaleDateString("pt-BR"))]
   ];
 
+  const presencasParaEnviar = [];
+
   const rows = document.querySelectorAll("#listaAlunos tr");
 
   rows.forEach((row, i) => {
@@ -102,13 +115,32 @@ function salvarFrequencia() {
       presencas.push(select ? select.value : "");
     });
     dados.push([i + 1, nome, ...presencas]);
+    presencasParaEnviar.push({ nome: nome, presenca: presencas.join(", ") });
   });
 
+  // Salvar Excel local
   const ws = XLSX.utils.aoa_to_sheet(dados);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Frequência");
-
   XLSX.writeFile(wb, `frequencia_${turma}_${ano}_${mes + 1}.xlsx`);
+
+  // Enviar para Google Sheets via API
+fetch(API_URL, {
+  method: "POST",
+  body: JSON.stringify({
+    ano,
+    mes,
+    turma,
+    presencas: presencasParaEnviar
+  }),
+  headers: {
+    "Content-Type": "application/json"
+  }
+})
+.then(res => res.text())
+.then(msg => console.log("Planilha:", msg))
+.catch(err => console.error("Erro ao enviar para planilha:", err));
+
 
   document.getElementById("mensagem").classList.remove("oculto");
   setTimeout(() => {
@@ -168,7 +200,6 @@ document.addEventListener("change", function (e) {
   if (e.target.tagName === "SELECT") {
     const valor = e.target.value;
     e.target.classList.remove("presente", "falta");
-
     if (valor === "P") {
       e.target.classList.add("presente");
     } else if (valor === "F") {
@@ -187,7 +218,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (i === currentYear) option.selected = true;
     anoSelect.appendChild(option);
   }
-
   carregarAlunos();
 });
 

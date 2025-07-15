@@ -16,6 +16,7 @@
     <h1>Frequência da Escola Bíblica Dominical</h1>
   </header>
 
+  <!-- Filtros -->
   <div class="form-container">
     <label for="ano">Ano:</label>
     <select id="ano" onchange="carregarAlunos()"></select>
@@ -40,15 +41,16 @@
     <label for="turma">Turma:</label>
     <select id="turma" onchange="carregarAlunos()">
       <option value="">Selecione</option>
-      <option value="criancas">Crianças</option>
-      <option value="adolescentes">Adolescentes</option>
-      <option value="jovens">Jovens</option>
-      <option value="adulto">Adulto</option>
-      <option value="terceira_idade">Terceira Idade</option>
-      <option value="discipulado">Discipulado</option>
+      <option value="Criancas">Crianças</option>
+      <option value="Adolescentes">Adolescentes</option>
+      <option value="Jovens">Jovens</option>
+      <option value="Adulto">Adulto</option>
+      <option value="Terceira Idade">Terceira Idade</option>
+      <option value="Discipulado">Discipulado</option>
     </select>
   </div>
 
+  <!-- Tabela -->
   <table id="tabela">
     <thead>
       <tr id="cabecalho">
@@ -60,39 +62,29 @@
     </tbody>
   </table>
 
+  <!-- Botões -->
   <div class="buttons">
     <button onclick="salvarFrequencia()">Salvar como Excel</button>
     <button onclick="gerarPDF()">Salvar como PDF</button>
   </div>
 
+  <!-- Mensagem -->
   <div id="mensagem" class="oculto">Frequência enviada com sucesso!</div>
 
+  <!-- Adicionar Aluno -->
+  <div class="form-add">
+    <h3>Adicionar novo aluno</h3>
+    <input type="text" id="novoAlunoNome" placeholder="Nome do aluno">
+    <button onclick="adicionarAluno()">Adicionar</button>
+  </div>
+
+  <!-- Bibliotecas -->
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+  <!-- Scripts internos -->
   <script src="js/alunos.js"></script>
   <script src="js/script.js"></script>
   <script src="js/pwa.js"></script>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const anoSelect = document.getElementById("ano");
-      const currentYear = new Date().getFullYear();
-      for (let i = currentYear - 2; i <= currentYear + 1; i++) {
-        const option = document.createElement("option");
-        option.value = i;
-        option.text = i;
-        if (i === currentYear) option.selected = true;
-        anoSelect.appendChild(option);
-      }
-    });
-  </script>
-  
-</body>
-</html>
-
-<div class="form-add">
-  <h3>Adicionar novo aluno</h3>
-  <input type="text" id="novoAlunoNome" placeholder="Nome do aluno">
-  <button onclick="adicionarAluno()">Adicionar</button>
-</div>
+  </body>
+  </html>
